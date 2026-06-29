@@ -1,7 +1,5 @@
-// src/pages/Home.jsx
 import { useEffect, useState } from 'react';
-import HeroSection from '../components/hero/HeroSection.jsx';
-import FeaturedReel from '../components/reel/FeaturedReel.jsx';
+import DashboardHero from '../components/hero/DashboardHero.jsx';
 
 // Showcase Layouts
 import HorizontalScrollGallery from '../components/showcases/HorizontalScrollGallery.jsx';
@@ -50,37 +48,29 @@ const Home = () => {
   }, []);
 
   // Bucket projects into categories for the different showcases
-  // We use the dummy data categories defined in projects.json
-  
   const commercialProjects = projects.filter(p => 
     p.category.includes('Commercial') || p.category.includes('Brand') || p.category.includes('Storytelling')
   );
-
   const shortFormProjects = projects.filter(p => 
     p.category.includes('Short-Form') || p.category.includes('Social')
   );
-
   const cinematicProjects = projects.filter(p => 
     p.category.includes('Long-Form') || p.category.includes('Cinematic')
   );
-
   const colorProjects = projects.filter(p => 
     p.category.includes('Color')
   );
-
   const experimentalProjects = projects.filter(p => 
     p.category.includes('Experimental') || p.category.includes('Visual Effects')
   );
 
   return (
     <main className="bg-bg-primary">
-      {/* Chapter 1 & 2: Intro & Hero */}
-      <HeroSection />
+      
+      {/* Chapter 1: The 3-Panel Cinematic Dashboard */}
+      <DashboardHero projects={projects} />
       
       <MarqueeText text="AI Filmmaker · Director · Motion Designer · Video Editor" />
-      
-      {/* Chapter 3: Showreel */}
-      <FeaturedReel />
 
       {/* Chapter 4: AI Commercials & Brand Campaigns (Horizontal Scroll) */}
       <HorizontalScrollGallery 

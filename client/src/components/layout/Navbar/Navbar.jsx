@@ -2,139 +2,185 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { gsap } from '../../../animations/gsap.js';
-import { NAV_LINKS, SITE_CONFIG } from '../../../utils/constants.js';
 
 const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const navRef = useRef(null);
-  const menuRef = useRef(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-
-  // Scroll detection
+  const ctaRef = useRef(null);
+  
+  // Handle scroll state for navbar appearance
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close menu on route change
+  // Magnetic hover effect for CTA button
   useEffect(() => {
-    setMenuOpen(false);
-  }, [location]);
+    const btn = ctaRef.current;
+    if (!btn) return;
 
-  // Mobile menu animation
-  useEffect(() => {
-    if (!menuRef.current) return;
-    const menuItems = menuRef.current.querySelectorAll('.menu-item');
+    const handleMouseMove = (e) => {
+      const rect = btn.getBoundingClientRect();
+      const h = rect.width / 2;
+      const x = e.clientX - rect.left - h;
+      const y = e.clientY - rect.top - h;
 
-    if (menuOpen) {
-      gsap.to(menuRef.current, { opacity: 1, visibility: 'visible', duration: 0.3 });
-      gsap.from(menuItems, {
-        y: 40,
-        opacity: 0,
-        stagger: 0.08,
-        duration: 0.6,
-        ease: 'power3.out',
+      gsap.to(btn, {
+        x: x * 0.3,
+        y: y * 0.3,
+        duration: 0.4,
+        ease: 'power3.out'
       });
-    } else {
-      gsap.to(menuRef.current, { opacity: 0, visibility: 'hidden', duration: 0.3 });
-    }
-  }, [menuOpen]);
+    };
 
-  const handleNavClick = (href) => {
-    if (href.startsWith('/#')) {
-      const id = href.replace('/#', '');
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+    const handleMouseLeave = () => {
+      gsap.to(btn, {
+        x: 0,
+        y: 0,
+        duration: 0.7,
+        ease: 'elastic.out(1, 0.3)'
+      });
+    };
+
+    btn.addEventListener('mousemove', handleMouseMove);
+    btn.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      btn.removeEventListener('mousemove', handleMouseMove);
+      btn.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
+
+  // Nav links configuration
+  const navLinks = [
+    { name: 'Work', path: '/projects' },
+    { name: 'AI Projects', path: '/projects?filter=ai' },
+    { name: 'Commercials', path: '/projects?filter=commercial' },
+    { name: 'Services', path: '/services' },
+    { name: 'About', path: '/about' },
+  ];
 
   return (
     <>
-      <nav
-        ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-600 ${
-          scrolled ? 'glass py-3' : 'py-6 bg-transparent'
+      <nav 
+        className={`fixed top-0 left-0 w-full h-[80px] z-[100] transition-all duration-500 border-b ${
+          isScrolled 
+            ? 'bg-black/70 backdrop-blur-xl border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]' 
+            : 'bg-black/40 backdrop-blur-md border-transparent'
         }`}
       >
-        <div className="section-container flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="group flex items-center gap-3">
-            <div className="w-8 h-8 rounded-md border border-accent flex items-center justify-center glow-accent">
-              <span className="text-accent font-display text-lg">A</span>
-            </div>
-            <span className="font-satoshi font-semibold text-sm tracking-wide text-white/90">
-              {SITE_CONFIG.name}
-            </span>
-          </Link>
+        <div className="w-full h-full px-6 md:px-12 flex items-center justify-between">
+          
+          {/* LEFT: Logo & Brand */}
+          <div className="flex-1 flex items-center justify-start">
+            <Link 
+              to="/" 
+              className="group flex items-center gap-3 cursor-none"
+              data-cursor="pointer"
+            >
+              <div className="w-8 h-8 bg-white text-black rounded-full flex items-center justify-center font-display text-xl leading-none pt-1 overflow-hidden" style={{ fontFamily: '"Bebas Neue", cursive' }}>
+                <span className="group-hover:-translate-y-full transition-transform duration-300 block">A</span>
+                <span className="absolute translate-y-full group-hover:translate-y-0 transition-transform duration-300 block text-accent">A</span>
+              </div>
+              <span className="font-display text-2xl tracking-widest text-white mt-1" style={{ fontFamily: '"Bebas Neue", cursive' }}>
+                ALEX RAY
+              </span>
+            </Link>
+          </div>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.label}
-                to={link.href}
-                onClick={() => handleNavClick(link.href)}
-                className="relative text-sm font-medium text-white/60 hover:text-white transition-colors duration-300 group"
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-accent transition-all duration-300 group-hover:w-full" />
-              </Link>
-            ))}
+          {/* CENTER: Navigation Links (Desktop) */}
+          <div className="hidden lg:flex flex-1 items-center justify-center gap-8">
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className="group relative px-2 py-1 cursor-none flex flex-col items-center justify-center text-sm font-satoshi"
+                  data-cursor="pointer"
+                >
+                  <span className={`transition-colors duration-300 group-hover:-translate-y-1 block ${isActive ? 'text-white' : 'text-white/60 group-hover:text-white'}`}>
+                    {link.name}
+                  </span>
+                  {/* Animated underline */}
+                  <span className={`absolute bottom-0 left-0 h-[1px] bg-accent transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                </Link>
+              );
+            })}
+          </div>
 
-            <a
-              href={SITE_CONFIG.resume}
-              download
-              className="btn-primary text-xs px-5 py-2.5 rounded-full"
+          {/* RIGHT: Contact & CTA */}
+          <div className="flex-1 flex items-center justify-end gap-6">
+            <Link 
+              to="/contact" 
+              className="hidden md:block text-sm font-satoshi text-white/60 hover:text-white transition-colors cursor-none hover:-translate-y-1 duration-300"
+              data-cursor="pointer"
+            >
+              Contact
+            </Link>
+            
+            <a 
+              ref={ctaRef}
+              href="/resume.pdf" 
+              target="_blank" 
+              rel="noreferrer"
+              className="hidden sm:flex items-center justify-center px-6 h-10 rounded bg-white text-black font-satoshi text-sm font-medium transition-colors hover:bg-gray-200 cursor-none"
+              data-cursor="pointer"
             >
               Download CV
             </a>
-          </div>
 
-          {/* Mobile Hamburger */}
-          <button
-            onClick={() => setMenuOpen((p) => !p)}
-            className="md:hidden flex flex-col gap-1.5 p-2 cursor-none"
-            aria-label="Toggle menu"
-          >
-            <span
-              className={`block h-px w-6 bg-white transition-all duration-300 ${
-                menuOpen ? 'rotate-45 translate-y-[7px]' : ''
-              }`}
-            />
-            <span
-              className={`block h-px w-4 bg-white/50 transition-all duration-300 ${
-                menuOpen ? 'opacity-0 w-0' : ''
-              }`}
-            />
-            <span
-              className={`block h-px w-6 bg-white transition-all duration-300 ${
-                menuOpen ? '-rotate-45 -translate-y-[7px]' : ''
-              }`}
-            />
-          </button>
+            {/* Mobile Hamburger Toggle */}
+            <button 
+              className="lg:hidden w-10 h-10 flex flex-col justify-center items-center gap-1.5 z-[110] relative cursor-none"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              data-cursor="pointer"
+            >
+              <span className={`w-6 h-[2px] bg-white transition-transform duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-[8px]' : ''}`} />
+              <span className={`w-6 h-[2px] bg-white transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+              <span className={`w-6 h-[2px] bg-white transition-transform duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-[8px]' : ''}`} />
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* Mobile Full-screen Menu */}
-      <div
-        ref={menuRef}
-        className="fixed inset-0 z-[99] glass-dark flex flex-col items-center justify-center md:hidden"
-        style={{ opacity: 0, visibility: 'hidden' }}
+      {/* Mobile Menu Drawer */}
+      <div 
+        className={`fixed inset-0 bg-black/95 backdrop-blur-2xl z-[105] lg:hidden flex flex-col justify-center px-12 transition-all duration-500 ${
+          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
       >
-        {NAV_LINKS.map((link) => (
+        <div className="flex flex-col gap-8">
+          {navLinks.map((link, i) => (
+            <Link
+              key={link.name}
+              to={link.path}
+              onClick={() => setMobileMenuOpen(false)}
+              className="font-display text-5xl text-white tracking-wider"
+              style={{ fontFamily: '"Bebas Neue", cursive', transitionDelay: `${i * 0.05}s`, transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(20px)', opacity: mobileMenuOpen ? 1 : 0, transition: 'all 0.4s ease-out' }}
+            >
+              {link.name}
+            </Link>
+          ))}
+          <div className="h-px w-full bg-white/10 my-4" />
           <Link
-            key={link.label}
-            to={link.href}
-            onClick={() => { handleNavClick(link.href); setMenuOpen(false); }}
-            className="menu-item text-5xl font-display text-white/80 hover:text-accent transition-colors duration-300 py-4 tracking-widest"
+            to="/contact"
+            onClick={() => setMobileMenuOpen(false)}
+            className="font-display text-4xl text-accent tracking-wider"
+            style={{ fontFamily: '"Bebas Neue", cursive' }}
           >
-            {link.label.toUpperCase()}
+            Contact
           </Link>
-        ))}
-        <div className="menu-item mt-10">
-          <a href={SITE_CONFIG.resume} download className="btn-outline">
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="w-full text-center py-4 border border-white/20 text-white font-satoshi text-sm rounded mt-4"
+          >
             Download CV
           </a>
         </div>
