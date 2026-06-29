@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "name": "Marcus Rivera",
+    "role": "Creative Director",
+    "company": "Apex Studios",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&q=80",
+    "rating": 5,
+    "text": "The quality of work delivered exceeded every expectation. The edit had a cinematic quality I haven't seen from a freelancer before — it felt like a Hollywood production house delivered it. Absolutely phenomenal."
+  },
+  {
+    "id": 2,
+    "name": "Priya Sharma",
+    "role": "Marketing Head",
+    "company": "TechLaunch Inc.",
+    "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&q=80",
+    "rating": 5,
+    "text": "Our product launch video got 2.3 million views in the first week. The storytelling, pacing, and color grading were world-class. We'll be coming back for every future campaign."
+  },
+  {
+    "id": 3,
+    "name": "James Whitfield",
+    "role": "Founder",
+    "company": "Luminary Group",
+    "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&q=80",
+    "rating": 5,
+    "text": "The brand story video perfectly captured our company's journey. It moved investors, inspired our team, and impressed at every conference we screened it. Best investment we made this year."
+  },
+  {
+    "id": 4,
+    "name": "Sophie Chen",
+    "role": "Content Director",
+    "company": "Vibe Media",
+    "avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&q=80",
+    "rating": 5,
+    "text": "I've worked with many video editors. None come close to this level of creativity and technical skill. The AI-generated content pipeline they built for us saved weeks of production time."
+  },
+  {
+    "id": 5,
+    "name": "Ahmed Al-Farsi",
+    "role": "Tourism Marketing Manager",
+    "company": "Dubai Tourism",
+    "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop&q=80",
+    "rating": 5,
+    "text": "The Dubai travel film was breathtaking. We've used it across all our global campaigns. The aerial footage combined with the color grade truly captured the spirit of the city."
+  },
+  {
+    "id": 6,
+    "name": "Rachel Donovan",
+    "role": "Bride",
+    "company": "Private Client",
+    "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&q=80",
+    "rating": 5,
+    "text": "I cried watching our wedding film for the first time — and every time since. It captured moments I didn't even know were being filmed. It's a treasure we'll have forever. Thank you so much."
+  },
+  {
+    "id": 7,
+    "name": "David Kim",
+    "role": "Agency Partner",
+    "company": "NovaBrand Agency",
+    "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&q=80",
+    "rating": 5,
+    "text": "Fast turnaround, zero revisions needed, and the final output always looks premium. This is now our go-to editor for all client video work. The level of professionalism is unmatched."
+  }
+]
